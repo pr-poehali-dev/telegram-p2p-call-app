@@ -80,6 +80,24 @@ const VideoRoom = () => {
     });
   };
 
+  const shareRoom = async () => {
+    const shareData = {
+      title: "Присоединяйтесь к видеозвонку",
+      text: `Присоединяйтесь к видеозвонку! ID комнаты: ${roomId}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        copyRoomId();
+      }
+    } else {
+      copyRoomId();
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col bg-background">
       <div className="flex-1 relative">
@@ -123,10 +141,18 @@ const VideoRoom = () => {
               </button>
             </div>
           </div>
+          <Button
+            onClick={shareRoom}
+            size="sm"
+            className="bg-primary/95 hover:bg-primary backdrop-blur-lg"
+          >
+            <Icon name="Share2" size={16} className="mr-2" />
+            Поделиться
+          </Button>
         </div>
 
         {isConnected && (
-          <div className="absolute bottom-28 right-6 w-48 h-36 rounded-2xl overflow-hidden border-2 border-primary shadow-2xl animate-scale-in">
+          <div className="absolute bottom-36 right-6 w-48 h-36 rounded-2xl overflow-hidden border-2 border-primary shadow-2xl animate-scale-in">
             <video
               ref={localVideoRef}
               autoPlay
@@ -144,7 +170,7 @@ const VideoRoom = () => {
       </div>
 
       {isConnected && (
-        <div className="p-6 bg-card/50 backdrop-blur-lg border-t border-border">
+        <div className="p-6 pb-28 bg-card/50 backdrop-blur-lg border-t border-border">
           <div className="flex items-center justify-center gap-4 animate-fade-in">
             <Button
               onClick={toggleMute}
